@@ -24,7 +24,7 @@ import vn.htcjsc.web.drama.interceptor.UrlLocaleInterceptor;
  */
 @Configuration
 @EnableWebMvc
-public class MyConfig extends WebMvcConfigurerAdapter {
+public class MyConfig extends WebMvcConfigurerAdapter{
      
     // Cấu hình để sử dụng các file nguồn tĩnh (html, image, ..)
     @Override
