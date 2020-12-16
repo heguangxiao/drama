@@ -33,6 +33,7 @@ public class MyConfig extends WebMvcConfigurerAdapter{
         registry.addResourceHandler("/images/**").addResourceLocations("/resources/images/").setCacheControl(CacheControl.maxAge(1, TimeUnit.SECONDS).cachePublic());
         registry.addResourceHandler("/img/**").addResourceLocations("/resources/img/").setCacheControl(CacheControl.maxAge(1, TimeUnit.SECONDS).cachePublic());
         registry.addResourceHandler("/js/**").addResourceLocations("/resources/js/").setCacheControl(CacheControl.maxAge(1, TimeUnit.SECONDS).cachePublic());
+        registry.addResourceHandler("/controller/**").addResourceLocations("/resources/controller/").setCacheControl(CacheControl.maxAge(1, TimeUnit.SECONDS).cachePublic());
     }
      
     @Override

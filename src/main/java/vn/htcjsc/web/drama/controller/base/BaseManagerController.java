@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  *
  * @author HTC-PC
  */
-@Controller("hieuBaseManagerController")
+@Controller
 @RequestMapping("/base/manager")
 public class BaseManagerController {
   
