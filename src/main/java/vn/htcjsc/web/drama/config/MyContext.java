@@ -5,18 +5,11 @@
  */
 package vn.htcjsc.web.drama.config;
 
-import com.mysql.cj.jdbc.AbandonedConnectionCleanupThread;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Enumeration;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
+import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +18,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.LocaleResolver;
@@ -41,8 +36,8 @@ import vn.htcjsc.web.drama.interceptor.UrlLocaleResolver;
 @Configuration
 @ComponentScan("vn.htcjsc.web.drama.*") 
 @PropertySource(value = {"classpath:application.properties"})
-@WebListener
-public class MyContext implements ServletContextListener {
+@EnableTransactionManagement
+public class MyContext {
             
     public static String HOST_NAME = "localhost";
     public static String DB_NAME = "drama";
@@ -198,28 +193,9 @@ public class MyContext implements ServletContextListener {
             System.out.println(e.getMessage());
             return defaultVal;
         }
-    }
-
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
-    }
-
-    @Override
-    public void contextDestroyed(ServletContextEvent sce) {     
-        Enumeration<Driver> drivers = DriverManager.getDrivers();
-        Driver driver = null;
-        while (drivers.hasMoreElements()) {
-            try {
-                driver = drivers.nextElement();
-                DriverManager.deregisterDriver(driver);
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-        AbandonedConnectionCleanupThread.checkedShutdown();
-    }       
+    }      
     
-    @Bean(destroyMethod = "close")
+    @Bean(name = "dataSource")
     public HikariDataSource dataSource() {
         HikariConfig config = new HikariConfig();
         HikariDataSource ds;
@@ -244,5 +220,13 @@ public class MyContext implements ServletContextListener {
         ds = new HikariDataSource(config);
 
         return ds;
+    }
+    
+    @Autowired
+    @Bean(name = "transactionManager")
+    public DataSourceTransactionManager getTransactionManager(DataSource dataSource) {
+        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(dataSource);
+
+        return transactionManager;
     }
 }
